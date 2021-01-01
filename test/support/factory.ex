@@ -9,10 +9,18 @@ defmodule Shelving.Factory do
   end
 
   def item_factory do
-    %Shelving.Inventories.Item{
+    %Shelving.Products.Item{
       name: sequence(:name, &"Item #{&1}"),
       slug: sequence(:slug, &"item-#{&1}"),
       account: build(:account)
+    }
+  end
+
+  def sku_factory do
+    %Shelving.Products.Sku{
+      item: build(:item),
+      manufacturer_sku: sequence(:manufacturer_sku, &"Manufacturer SKU #{&1}"),
+      slug: sequence(:slug, &"manufacturer-sku-#{&1}")
     }
   end
 end

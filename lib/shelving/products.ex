@@ -1,12 +1,12 @@
-defmodule Shelving.Inventories do
+defmodule Shelving.Products do
   @moduledoc """
-  The Inventories context.
+  The Products context.
   """
 
   import Ecto.Query, warn: false
   alias Shelving.Repo
 
-  alias Shelving.Inventories.Item
+  alias Shelving.Products.Item
   alias Shelving.Accounts.Account
 
   @doc """
@@ -109,5 +109,109 @@ defmodule Shelving.Inventories do
   """
   def change_item(%Item{} = item, attrs \\ %{}) do
     Item.changeset(item, attrs)
+  end
+
+  alias Shelving.Products.Sku
+
+  @doc """
+  Returns the list of skus.
+
+  ## Examples
+
+      iex> list_skus()
+      [%Sku{}, ...]
+
+  """
+  def list_skus(%Item{} = item) do
+    Sku
+    |> Sku.unarchived()
+    |> Sku.for_item(item)
+    |> Repo.all()
+  end
+
+  @doc """
+  Gets a single sku.
+
+  Raises `Ecto.NoResultsError` if the Sku does not exist.
+
+  ## Examples
+
+      iex> get_sku!(123)
+      %Sku{}
+
+      iex> get_sku!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_sku!(%Item{} = item, id) do
+    Sku
+    |> Sku.unarchived()
+    |> Sku.for_item(item)
+    |> Repo.get!(id)
+  end
+
+  @doc """
+  Creates a sku.
+
+  ## Examples
+
+      iex> create_sku(%{field: value})
+      {:ok, %Sku{}}
+
+      iex> create_sku(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_sku(%Item{} = item, attrs \\ %{}) do
+    %Sku{}
+    |> Sku.changeset(item, attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a sku.
+
+  ## Examples
+
+      iex> update_sku(sku, %{field: new_value})
+      {:ok, %Sku{}}
+
+      iex> update_sku(sku, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_sku(%Sku{} = sku, attrs) do
+    sku
+    |> Sku.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a sku.
+
+  ## Examples
+
+      iex> delete_sku(sku)
+      {:ok, %Sku{}}
+
+      iex> delete_sku(sku)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_sku(%Sku{} = sku) do
+    Repo.delete(sku)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking sku changes.
+
+  ## Examples
+
+      iex> change_sku(sku)
+      %Ecto.Changeset{data: %Sku{}}
+
+  """
+  def change_sku(%Sku{} = sku, attrs \\ %{}) do
+    Sku.changeset(sku, attrs)
   end
 end

@@ -1,8 +1,13 @@
 defmodule Shelving.Slug do
+  use Ecto.Type
+
   @moduledoc """
   Adds a method to create a slug from an ecto schema.
   """
   import Ecto.Changeset
+
+  @type t :: String.t() | nil
+  def type, do: :string
 
   @spec slugify(Ecto.Changeset.t(), atom | [atom]) :: Ecto.Changeset.t()
   @doc """
@@ -29,9 +34,16 @@ defmodule Shelving.Slug do
 
   def slugify(%Ecto.Changeset{} = changeset, field), do: slugify(changeset, [field])
 
-  @spec generate_slug(binary) :: binary
-  def generate_slug(title) when is_binary(title) do
-    title
+  @spec generate_slug(String.t()) :: String.t()
+  @doc """
+  Generate a slug from a string
+
+      iex> generate_slug("This is a test")
+
+      "this-is-a-test"
+  """
+  def generate_slug(str) when is_binary(str) do
+    str
     |> String.trim()
     |> String.normalize(:nfd)
     |> String.downcase()
@@ -39,15 +51,13 @@ defmodule Shelving.Slug do
     |> String.replace(~r/(\s|-)+/, "-")
   end
 
+  # Determines if any of the given fields are dirty
   defp any_changed?(%Ecto.Changeset{} = changeset, fields) do
-    all_unchanged =
-      fields
-      |> Enum.map(&get_change(changeset, &1))
-      |> Enum.all?(&is_nil/1)
-
-    !all_unchanged
+    fields
+    |> Enum.any?(fn field -> get_change(changeset, field) != nil end)
   end
 
+  # Put the slug into the changeset as "slug"
   defp put_slug(changeset, fields) do
     slug =
       fields
@@ -57,4 +67,17 @@ defmodule Shelving.Slug do
 
     put_change(changeset, :slug, slug)
   end
+
+  def cast(slug) when is_binary(slug), do: {:ok, slug}
+  def cast(nil), do: {:ok, nil}
+
+  # Everything else is a failure though
+  def cast(_), do: :error
+
+  def load(data) when is_binary(data), do: {:ok, data}
+  def load(nil), do: {:ok, nil}
+
+  def dump(slug) when is_binary(slug), do: {:ok, slug}
+  def dump(nil), do: {:ok, nil}
+  def dump(_), do: :error
 end

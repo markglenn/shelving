@@ -1,6 +1,6 @@
 defmodule Shelving.Accounts.Account do
   use Ecto.Schema
-  use Shelving.Archive
+  use Shelving.ArchivedAt
 
   alias Shelving.Slug
 
@@ -9,17 +9,17 @@ defmodule Shelving.Accounts.Account do
   @type t :: %__MODULE__{
           id: pos_integer(),
           name: String.t(),
-          slug: String.t() | nil,
-          archived_at: NaiveDateTime.t() | nil,
+          slug: Slug.t(),
+          archived_at: ArchivedAt.t(),
           inserted_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t()
         }
 
   schema "accounts" do
     field :name, :string
-    field :slug, :string
+    field :slug, Slug
 
-    field :archived_at, :naive_datetime
+    field :archived_at, ArchivedAt.type()
     timestamps()
   end
 
