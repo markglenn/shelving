@@ -7,6 +7,7 @@ defmodule Shelving.Inventories do
   alias Shelving.Repo
 
   alias Shelving.Inventories.Item
+  alias Shelving.Accounts.Account
 
   @doc """
   Returns the list of items.
@@ -17,8 +18,11 @@ defmodule Shelving.Inventories do
       [%Item{}, ...]
 
   """
-  def list_items do
-    Repo.all(Item)
+  def list_items(%Account{} = account) do
+    Item
+    |> Item.unarchived()
+    |> Item.for_account(account)
+    |> Repo.all()
   end
 
   @doc """
@@ -35,7 +39,12 @@ defmodule Shelving.Inventories do
       ** (Ecto.NoResultsError)
 
   """
-  def get_item!(id), do: Repo.get!(Item, id)
+  def get_item!(%Account{} = account, id) do
+    Item
+    |> Item.unarchived()
+    |> Item.for_account(account)
+    |> Repo.get!(id)
+  end
 
   @doc """
   Creates a item.
@@ -49,9 +58,9 @@ defmodule Shelving.Inventories do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_item(attrs \\ %{}) do
+  def create_item(%Account{} = account, attrs \\ %{}) do
     %Item{}
-    |> Item.changeset(attrs)
+    |> Item.changeset(account, attrs)
     |> Repo.insert()
   end
 
@@ -86,7 +95,7 @@ defmodule Shelving.Inventories do
 
   """
   def delete_item(%Item{} = item) do
-    Repo.delete(item)
+    Repo.archive(item)
   end
 
   @doc """
