@@ -47,13 +47,13 @@ defmodule Shelving.InventoriesTest do
     test "update_item/2 with invalid data returns error changeset" do
       item = insert(:item)
       assert {:error, %Ecto.Changeset{}} = Inventories.update_item(item, @invalid_attrs)
-      assert item == Inventories.get_item!(item.id) |> Repo.preload(:account)
+      assert item == Inventories.get_item!(item.account, item.id) |> Repo.preload(:account)
     end
 
     test "delete_item/1 deletes the item" do
       item = insert(:item)
       assert {:ok, %Item{}} = Inventories.delete_item(item)
-      assert_raise Ecto.NoResultsError, fn -> Inventories.get_item!(item.id) end
+      assert_raise Ecto.NoResultsError, fn -> Inventories.get_item!(item.account, item.id) end
     end
 
     test "change_item/1 returns a item changeset" do

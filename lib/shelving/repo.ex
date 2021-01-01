@@ -4,7 +4,7 @@ defmodule Shelving.Repo do
     adapter: Ecto.Adapters.Postgres
 
   @spec archive(struct) :: {:ok, struct} | {:error, Ecto.Changeset.t()}
-  def archive(%struct{} = record) do
+  def archive(%struct{archived_at: _} = record) do
     record
     |> struct.archive_changeset()
     |> update()
