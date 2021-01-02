@@ -1,11 +1,11 @@
 defmodule Shelving.Products.Item do
   use Ecto.Schema
-  use Shelving.ArchivedAt
+  use Shelving.Types.ArchivedAt
 
   import Ecto.Changeset
   import Ecto.Query, only: [from: 2]
 
-  alias Shelving.Slug
+  alias Shelving.Types.Slug
   alias Shelving.Accounts.Account
 
   @type t :: %__MODULE__{
@@ -13,7 +13,7 @@ defmodule Shelving.Products.Item do
           name: String.t(),
           slug: Slug.t(),
           account: Account.t(),
-          archived_at: ArchivedAt.t(),
+          archived_at: NaiveDateTime.t() | nil,
           inserted_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t()
         }
@@ -21,9 +21,9 @@ defmodule Shelving.Products.Item do
   schema "items" do
     field :name, :string
     field :slug, Slug
-    field :archived_at, ArchivedAt.type()
     belongs_to :account, Account
 
+    field :archived_at, :naive_datetime
     timestamps()
   end
 

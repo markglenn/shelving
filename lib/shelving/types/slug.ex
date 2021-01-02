@@ -1,4 +1,4 @@
-defmodule Shelving.Slug do
+defmodule Shelving.Types.Slug do
   use Ecto.Type
 
   @moduledoc """

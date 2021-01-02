@@ -1,13 +1,7 @@
-defmodule Shelving.ArchivedAt do
-  @type t :: NaiveDateTime.t() | nil
-
-  @spec type :: :naive_datetime
-  def type, do: :naive_datetime
-
+defmodule Shelving.Types.ArchivedAt do
   defmacro __using__(_opts) do
     quote do
       require Ecto.Query
-      alias Shelving.ArchivedAt
 
       def unarchived(queryable \\ __MODULE__) do
         queryable

@@ -1,8 +1,8 @@
 defmodule Shelving.Accounts.Account do
   use Ecto.Schema
-  use Shelving.ArchivedAt
+  use Shelving.Types.ArchivedAt
 
-  alias Shelving.Slug
+  alias Shelving.Types.Slug
 
   import Ecto.Changeset
 
@@ -10,7 +10,7 @@ defmodule Shelving.Accounts.Account do
           id: pos_integer(),
           name: String.t(),
           slug: Slug.t(),
-          archived_at: ArchivedAt.t(),
+          archived_at: NaiveDateTime.t() | nil,
           inserted_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t()
         }
@@ -19,7 +19,7 @@ defmodule Shelving.Accounts.Account do
     field :name, :string
     field :slug, Slug
 
-    field :archived_at, ArchivedAt.type()
+    field :archived_at, :naive_datetime
     timestamps()
   end
 
