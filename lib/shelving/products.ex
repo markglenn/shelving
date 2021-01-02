@@ -58,9 +58,9 @@ defmodule Shelving.Products do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_item(%Account{} = account, attrs \\ %{}) do
-    %Item{}
-    |> Item.changeset(account, attrs)
+  def create_item(attrs \\ %{}, for: %Account{id: account_id}) do
+    %Item{account_id: account_id}
+    |> Item.changeset(attrs)
     |> Repo.insert()
   end
 
@@ -162,9 +162,9 @@ defmodule Shelving.Products do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_sku(%Item{} = item, attrs \\ %{}) do
-    %Sku{}
-    |> Sku.changeset(item, attrs)
+  def create_sku(attrs \\ %{}, for: %Item{id: item_id}) do
+    %Sku{item_id: item_id}
+    |> Sku.changeset(attrs)
     |> Repo.insert()
   end
 

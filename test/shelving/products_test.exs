@@ -26,14 +26,14 @@ defmodule Shelving.ProductsTest do
     end
 
     test "create_item/1 with valid data creates a item", %{account: account} do
-      assert {:ok, %Item{} = item} = Products.create_item(account, @valid_attrs)
+      assert {:ok, %Item{} = item} = Products.create_item(@valid_attrs, for: account)
       assert item.archived_at == ~N[2010-04-17 14:00:00]
       assert item.name == "some name"
       assert item.slug == nil
     end
 
     test "create_item/1 with invalid data returns error changeset", %{account: account} do
-      assert {:error, %Ecto.Changeset{}} = Products.create_item(account, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Products.create_item(@invalid_attrs, for: account)
     end
 
     test "update_item/2 with valid data updates the item" do
@@ -83,14 +83,14 @@ defmodule Shelving.ProductsTest do
     end
 
     test "create_sku/1 with valid data creates a sku" do
-      assert {:ok, %Sku{} = sku} = Products.create_sku(insert(:item), @valid_attrs)
+      assert {:ok, %Sku{} = sku} = Products.create_sku(@valid_attrs, for: insert(:item))
       assert sku.archived_at == nil
       assert sku.manufacturer_sku == "some sku"
       assert sku.slug == "some-sku"
     end
 
     test "create_sku/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Products.create_sku(insert(:item), @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Products.create_sku(@invalid_attrs, for: insert(:item))
     end
 
     test "update_sku/2 with valid data updates the sku" do

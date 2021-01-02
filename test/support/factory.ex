@@ -23,4 +23,12 @@ defmodule Shelving.Factory do
       slug: sequence(:slug, &"manufacturer-sku-#{&1}")
     }
   end
+
+  def warehouse_factory do
+    %Shelving.Locations.Warehouse{
+      name: sequence(:name, &"Warehouse #{&1}"),
+      slug: sequence(:slug, &"warehouse-#{&1}"),
+      account: build(:account)
+    }
+  end
 end

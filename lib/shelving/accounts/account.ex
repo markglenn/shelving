@@ -19,7 +19,7 @@ defmodule Shelving.Accounts.Account do
     field :name, :string
     field :slug, Slug
 
-    field :archived_at, :naive_datetime
+    archivable_timestamp()
     timestamps()
   end
 

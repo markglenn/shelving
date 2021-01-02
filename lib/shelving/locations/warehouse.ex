@@ -1,26 +1,27 @@
-defmodule Shelving.Products.Item do
+defmodule Shelving.Locations.Warehouse do
   use Ecto.Schema
   use Shelving.Types.ArchivedAt
 
   import Ecto.Changeset
-  import Ecto.Query, only: [from: 2]
+  import Ecto.Query, only: [where: 3]
 
-  alias Shelving.Types.Slug
   alias Shelving.Accounts.Account
+  alias Shelving.Types.Slug
 
   @type t :: %__MODULE__{
           id: pos_integer(),
           name: String.t(),
-          slug: Slug.t(),
+          slug: String.t() | nil,
           account: Account.t(),
+          account_id: pos_integer(),
           archived_at: NaiveDateTime.t() | nil,
           inserted_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t()
         }
 
-  schema "items" do
+  schema "warehouses" do
     field :name, :string
-    field :slug, Slug
+    field :slug, :string
     belongs_to :account, Account
 
     archivable_timestamp()
@@ -28,16 +29,15 @@ defmodule Shelving.Products.Item do
   end
 
   @doc false
-  def changeset(item, attrs) do
-    item
+  def changeset(warehouse, attrs) do
+    warehouse
     |> cast(attrs, [:name, :archived_at])
+    |> validate_required([:name])
     |> Slug.slugify([:name])
-    |> validate_required([:account_id, :name])
     |> unique_constraint([:account_id, :slug])
+    |> foreign_key_constraint(:account_id)
   end
 
-  @spec for_account(Ecto.Queryable.t(), Account.t()) :: Ecto.Query.t()
-  def for_account(queryable \\ __MODULE__, %Account{id: account_id}) do
-    from q in queryable, where: q.account_id == ^account_id
-  end
+  def for_account(queryable \\ __MODULE__, %Account{id: account_id}),
+    do: where(queryable, [q], q.account_id == ^account_id)
 end
